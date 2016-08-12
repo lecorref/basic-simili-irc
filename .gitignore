@@ -1,0 +1,9 @@
+# neovim linter crap
+serveur/ft_irc.h
+serveur/src/ft_irc.h
+
+# objs
+*.o
+
+# bin
+serveur/ft_irc
