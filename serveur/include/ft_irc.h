@@ -2,7 +2,9 @@
 # define FT_IRC_H
 
 # include <netdb.h>
+# include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
 # include <sys/select.h>
 # include <sys/socket.h>
 # include <sys/types.h>
@@ -31,6 +33,12 @@ typedef struct      s_member
 {
     int             status;
 }                   t_member;
+
+/*
+ * accept.c
+ */
+int         ft_accept(t_server *serv, t_member *user);
+
 /*
  * error.c
  */
@@ -41,6 +49,15 @@ int         r_error(char *error);
  * main.c
  */
 int         get_port(char *number, int *port);
+int         init(t_server *serv, t_member user[FD_MAX], int port);
+
+/*
+ * select_loop.c
+ */
+void         int_handler(int dummy);
+void         ft_select(t_server *serv);
+void         process_select(t_server *serv, t_member user[FD_MAX]);
+void         loop(t_server *serv, t_member user[FD_MAX]);
 
 
 #endif

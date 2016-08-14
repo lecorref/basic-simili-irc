@@ -18,8 +18,10 @@ CFLAGS	= -I $(INCDIR) -Wall -Wextra -Werror
 
 # source files
 SRC		= \
+		  accept.c \
 		  error.c \
-		  main.c
+		  main.c \
+		  select_loop.c
 
 # obj
 OBJS	= $(patsubst %.c, $(OBJDIR)/%.o, $(SRC))

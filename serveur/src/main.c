@@ -1,11 +1,8 @@
-#include <stdio.h>
-#include <string.h>
 #include "ft_irc.h"
-
 
 int     get_port(char *number, int *port)
 {
-    if ((*port = atoi(number)) > 0)
+    if ((*port = atoi(number)) <= 0)
         return (1);
     return (0);
 }
@@ -49,6 +46,7 @@ int     main(int ac, char **av)
     }
     if (get_port(av[1], &port) || init(&serv, user, port))
         return (1);
+    loop(&serv, user);
     return (0);
 }
 
