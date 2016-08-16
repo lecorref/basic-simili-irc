@@ -1,6 +1,6 @@
 #include "ft_irc.h"
 
-int         ft_accept(t_server *serv, t_member *user)
+int         ft_accept(t_server *serv, t_member **user)
 {
     int                 new_user;
     struct sockaddr_in  new_sin;
@@ -14,6 +14,6 @@ int         ft_accept(t_server *serv, t_member *user)
         serv->fd_max++;
     if (serv->fd_max > FD_MAX)
         ;//close new fd then exit and log bad entry
-    user[new_user].status = FD_CLIENT;
+    user[new_user]->status = FD_CLIENT;
     return (0);
 }

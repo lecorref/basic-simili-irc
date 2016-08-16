@@ -21,6 +21,7 @@ SRC		= \
 		  accept.c \
 		  error.c \
 		  main.c \
+		  read.c \
 		  select_loop.c
 
 # obj

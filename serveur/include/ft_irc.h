@@ -9,11 +9,14 @@
 # include <sys/socket.h>
 # include <sys/types.h>
 # include <sys/time.h>
+# include <unistd.h>
 
 # define FD_MAX 250
 # define FD_FREE 0
 # define FD_SERVER 1
-# define FD_CLIENT 3
+# define FD_CLIENT 2
+
+# define READ_MAX 512
 
 /*
  * structs
@@ -37,7 +40,7 @@ typedef struct      s_member
 /*
  * accept.c
  */
-int         ft_accept(t_server *serv, t_member *user);
+int         ft_accept(t_server *serv, t_member *user[FD_MAX]);
 
 /*
  * error.c
@@ -49,15 +52,21 @@ int         r_error(char *error);
  * main.c
  */
 int         get_port(char *number, int *port);
-int         init(t_server *serv, t_member user[FD_MAX], int port);
+int         init(t_server *serv, t_member **user, int port);
+
+/*
+ * read.c
+ */
+int         ft_read(t_server *serv, t_member *user, int fd);
+
 
 /*
  * select_loop.c
  */
 void         int_handler(int dummy);
 void         ft_select(t_server *serv);
-void         process_select(t_server *serv, t_member user[FD_MAX]);
-void         loop(t_server *serv, t_member user[FD_MAX]);
+void         process_select(t_server *serv, t_member **user);
+void         loop(t_server *serv, t_member **user);
 
 
 #endif

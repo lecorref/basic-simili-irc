@@ -9,7 +9,7 @@ void    int_handler(int dummy)
     g_continue = 0;
 }
 
-void    init_select(t_server *serv, t_member user[FD_MAX])
+void    init_select(t_server *serv, t_member **user)
 {
     unsigned int     i;
 
@@ -18,10 +18,10 @@ void    init_select(t_server *serv, t_member user[FD_MAX])
     FD_ZERO(&serv->fd_write);
     while (i <= serv->fd_max)
     {
-        if (user[i].status != FD_FREE)
+        if (user[i]->status != FD_FREE)
         {
             FD_SET(i, &serv->fd_read);
-            if (user[i].status != FD_SERVER)
+            if (user[i]->status != FD_SERVER)
                 FD_SET(i, &serv->fd_write);
         }
         i++;
@@ -38,7 +38,7 @@ void    ft_select(t_server *serv)
             &serv->fd_write, NULL, &time);
 }
 
-void    process_select(t_server *serv, t_member user[FD_MAX])
+void    process_select(t_server *serv, t_member **user)
 {
     unsigned int      i;
 
@@ -47,22 +47,21 @@ void    process_select(t_server *serv, t_member user[FD_MAX])
     {
         if (FD_ISSET(i, &serv->fd_read))
         {
-            if (user[i].status == FD_SERVER)
+            if (user[i]->status == FD_SERVER)
                 ft_accept(serv, user);
             else
-            ;//    ft_read(serv, user,i);
+                ft_read(serv, user[i], i);
         }
         if (FD_ISSET(i, &serv->fd_write))
- ;//           ft_write(serv, user,i);
+            ;//           ft_write(serv, user,i);
         if ((FD_ISSET(i, &serv->fd_read)) || (FD_ISSET(i, &serv->fd_write)))
             serv->fd_select--;
         i++;
     }
 }
 
-void    loop(t_server *serv, t_member user[FD_MAX])
+void    loop(t_server *serv, t_member **user)
 {
-    printf("start!\n");
     while (g_continue)
     {
         signal(SIGINT, int_handler);

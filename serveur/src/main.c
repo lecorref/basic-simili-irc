@@ -7,7 +7,7 @@ int     get_port(char *number, int *port)
     return (0);
 }
 
-int     init(t_server *serv, t_member user[FD_MAX], int port)
+int     init(t_server *serv, t_member **user, int port)
 {
     struct protoent     *proto;
     struct sockaddr_in  sin;
@@ -26,7 +26,7 @@ int     init(t_server *serv, t_member user[FD_MAX], int port)
         return (1);
     }
     listen(serv->sock, FD_MAX);
-    user[serv->sock].status = FD_SERVER;
+    user[serv->sock]->status = FD_SERVER;
     serv->fd_max = serv->sock;
     return (0);
 }
@@ -35,10 +35,17 @@ int     main(int ac, char **av)
 {
     int         port;
     t_server    serv;
-    t_member    user[FD_MAX];
+    t_member    **user;
+    int         i;
 
-    bzero(user, sizeof(t_member) * FD_MAX);
-    port = 0;
+    i = 0;
+    user = malloc(sizeof(t_member *) * FD_MAX);
+    while (i <= FD_MAX)
+    {
+        user[i] = malloc(sizeof(t_member));
+        bzero(user[i], sizeof(t_member)); //use memalloc
+        i++;
+    }
     if (ac != 2)
     {
         usage(av[0]);
