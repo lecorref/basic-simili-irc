@@ -23,7 +23,7 @@ typedef struct      s_server
 {
     int             port;
     int             sock;
-    int             fd_max;
+    unsigned int    fd_max;
     int             fd_select;
     fd_set          fd_read;
     fd_set          fd_write;

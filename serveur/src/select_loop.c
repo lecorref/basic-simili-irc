@@ -11,7 +11,7 @@ void    int_handler(int dummy)
 
 void    init_select(t_server *serv, t_member user[FD_MAX])
 {
-    int         i;
+    unsigned int     i;
 
     i = 3;
     FD_ZERO(&serv->fd_read);
@@ -40,20 +40,15 @@ void    ft_select(t_server *serv)
 
 void    process_select(t_server *serv, t_member user[FD_MAX])
 {
-    int         i;
+    unsigned int      i;
 
     i = 3;
     while (i <= serv->fd_max && serv->fd_select)
     {
-            printf("select!\n");
         if (FD_ISSET(i, &serv->fd_read))
         {
-            printf("read!\n");
             if (user[i].status == FD_SERVER)
-            {
-                printf("accept!!\n");
                 ft_accept(serv, user);
-            }
             else
             ;//    ft_read(serv, user,i);
         }

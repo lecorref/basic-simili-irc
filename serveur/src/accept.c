@@ -10,8 +10,10 @@ int         ft_accept(t_server *serv, t_member *user)
     if ((new_user = accept(serv->sock,
                     (struct sockaddr *)&new_sin, &sin_len)) < 0)
         return (1);
-    printf("new connection!\n");
-    (void)user;
-
+    if (sin_len > serv->fd_max)
+        serv->fd_max++;
+    if (serv->fd_max > FD_MAX)
+        ;//close new fd then exit and log bad entry
+    user[new_user].status = FD_CLIENT;
     return (0);
 }
