@@ -1,5 +1,15 @@
 #include "ft_irc.h"
 
+int         init_client(t_member *user)
+{
+    t_ring_buf      *rbuf;
+
+    rbuf = NULL;
+    user->buf = rbuf;
+    user->status = FD_CLIENT;
+    return (0);
+}
+
 int         ft_accept(t_server *serv, t_member **user)
 {
     int                 new_user;

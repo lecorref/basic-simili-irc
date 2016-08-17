@@ -18,9 +18,18 @@
 
 # define READ_MAX 512
 
+# define BUFF_SIZE 2048
+
 /*
  * structs
  */
+typedef struct      s_ring_buf
+{
+    char            *buffer;
+    size_t          size;
+    int             start;
+    int             end;
+}                   t_ring_buf;
 
 typedef struct      s_server
 {
@@ -35,6 +44,7 @@ typedef struct      s_server
 typedef struct      s_member
 {
     int             status;
+    t_ring_buf      *buf;
 }                   t_member;
 
 /*
@@ -57,6 +67,7 @@ int         init(t_server *serv, t_member **user, int port);
 /*
  * read.c
  */
+int         init_client(t_member *user);
 int         ft_read(t_server *serv, t_member *user, int fd);
 
 
