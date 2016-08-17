@@ -22,6 +22,7 @@ SRC		= \
 		  error.c \
 		  main.c \
 		  read.c \
+		  ring_buffer.c \
 		  select_loop.c
 
 # obj

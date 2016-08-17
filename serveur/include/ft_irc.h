@@ -18,7 +18,8 @@
 
 # define READ_MAX 512
 
-# define BUFF_SIZE 2048
+# define SEND_SIZE 4096
+# define RECEIVE_SIZE 4096
 
 /*
  * structs
@@ -27,8 +28,8 @@ typedef struct      s_ring_buf
 {
     char            *buffer;
     size_t          size;
-    int             start;
-    int             end;
+    char            *start;
+    char            *end;
 }                   t_ring_buf;
 
 typedef struct      s_server
@@ -44,8 +45,11 @@ typedef struct      s_server
 typedef struct      s_member
 {
     int             status;
-    t_ring_buf      *buf;
+    t_ring_buf      rcv_buf;
+    t_ring_buf      snd_buf;
 }                   t_member;
+
+enum                e_buff_type{SEND, RECEIVE};
 
 /*
  * accept.c
@@ -70,6 +74,10 @@ int         init(t_server *serv, t_member **user, int port);
 int         init_client(t_member *user);
 int         ft_read(t_server *serv, t_member *user, int fd);
 
+/*
+ * ring_buffer.c
+ */
+int         init_buffer(t_ring_buf *rbuf, int type);
 
 /*
  * select_loop.c

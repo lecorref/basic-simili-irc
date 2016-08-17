@@ -2,10 +2,10 @@
 
 int         init_client(t_member *user)
 {
-    t_ring_buf      *rbuf;
-
-    rbuf = NULL;
-    user->buf = rbuf;
+    bzero(user, sizeof(t_member));
+    if (init_buffer(&(user->rcv_buf), RECEIVE)
+            || init_buffer(&(user->snd_buf), SEND))
+        return (1);
     user->status = FD_CLIENT;
     return (0);
 }
