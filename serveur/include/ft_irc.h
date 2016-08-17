@@ -26,10 +26,12 @@
  */
 typedef struct      s_ring_buf
 {
-    char            *buffer;
     size_t          size;
+    int             flag;
     char            *start;
     char            *end;
+    char            *read;
+    char            *write;
 }                   t_ring_buf;
 
 typedef struct      s_server
