@@ -24,6 +24,6 @@ int         ft_accept(t_server *serv, t_member **user)
         serv->fd_max++;
     if (serv->fd_max > FD_MAX)
         ;//close new fd then exit and log bad entry
-    user[new_user]->status = FD_CLIENT;
+    init_client(user[new_user]);
     return (0);
 }

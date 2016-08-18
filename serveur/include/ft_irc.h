@@ -80,6 +80,7 @@ int         ft_read(t_server *serv, t_member *user, int fd);
  * ring_buffer.c
  */
 int         init_buffer(t_ring_buf *rbuf, int type);
+int         write_buf(t_ring_buf *buf, char *str, int len);
 
 /*
  * select_loop.c

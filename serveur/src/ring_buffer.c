@@ -1,8 +1,8 @@
 #include "ft_irc.h"
 
-int         init_begin(t_ring_buf *rbuf, int type)
+int         init_buffer(t_ring_buf *rbuf, int type)
 {
-    rbuf->size = type == SEND ? SEND_SIZE : RECEIVE_SIZE;
+    rbuf->size = (type == SEND) ? SEND_SIZE : RECEIVE_SIZE;
     if (!(rbuf->start = malloc(sizeof(char) * rbuf->size)))
         return (1);
     bzero(rbuf->start, rbuf->size);
@@ -13,11 +13,10 @@ int         init_begin(t_ring_buf *rbuf, int type)
     return (0);
 }
 
-int         write_buf(t_ring_buf *buf, char *str)
+int         write_buf(t_ring_buf *buf, char *str, int len)
 {
-    int         len;
+    int     len2; //chose a better name
 
-    len = strlen(str);
     if (buf->write > buf->read || (buf->write == buf->read && buf->flag == 0))
     {
         buf->flag = 1;
@@ -28,10 +27,10 @@ int         write_buf(t_ring_buf *buf, char *str)
         }
         else
         {
-            len = buf->end - buf->write;
+            len2 = buf->end - buf->write;
             strncpy(buf->write, str, len);
             buf->write = buf->start;
-            return (write_buf(buf, str + len));
+            return (write_buf(buf, str + len2, len - len2));
         }
     }
     else

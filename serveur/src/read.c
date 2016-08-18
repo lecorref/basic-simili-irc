@@ -3,18 +3,17 @@
 int     ft_read(t_server *serv, t_member *user, int fd)
 {
     int     ret;
-    char    *buf;
+    char    buf[READ_MAX];
 
     (void)serv;
-    (void)user;
     ret = READ_MAX;
-    buf = malloc(sizeof(char) * READ_MAX);
     while (ret == READ_MAX)
     {
         bzero(buf, READ_MAX);
         if ((ret = read(fd, buf, READ_MAX)) <= 0)
             return 1; //close client
-        printf("%s", buf);
+        if (write_buf(&(user->rcv_buf), buf, ret))
+            return 1; //log error?
     }
     return (0);
 }
