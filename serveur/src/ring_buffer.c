@@ -13,6 +13,12 @@ int         init_buffer(t_ring_buf *rbuf, int type)
     return (0);
 }
 
+static int  copy_buf(char *dest, char *src, int len)
+{
+    strncpy(dest, src, len);
+    return (len);
+}
+
 int         write_buf(t_ring_buf *buf, char *str, int len)
 {
     int     len2; //chose a better name
@@ -21,10 +27,7 @@ int         write_buf(t_ring_buf *buf, char *str, int len)
     {
         buf->flag = 1;
         if (buf->write + len < buf->end)
-        {
-            strncpy(buf->write, str, len);
-            buf->write += len;
-        }
+            buf->write += copy_buf(buf->write, str, len);
         else
         {
             len2 = buf->end - buf->write;
@@ -48,4 +51,36 @@ int         write_buf(t_ring_buf *buf, char *str, int len)
         }
     }
     return (0);
+}
+
+static char get_last_char(t_ring_buf *buf)
+{
+    return (buf->write == buf->start ? *(buf->end) : *(buf->write - 1));
+}
+
+char        *read_buf(t_ring_buf *buf)
+{
+    char        *ret;
+    int         len;
+    int         len2;
+
+    ret = NULL;
+    if (buf->flag == 0 || get_last_char(buf) != '\n')
+        return (ret);
+    len = buf->write - buf->read;
+    if (len > 0)
+        ret = strndup(buf->read, len);
+    else
+    {
+        len = buf->end - buf->read;
+        len2 = buf->write - buf->start;
+        if (!(ret = malloc(sizeof(char) * (len + len2) + 1)))
+            return (NULL);
+        bzero(ret, len + len2 + 1);
+        ret = strncpy(ret, buf->read, len);
+        ret = strncat(ret, buf->start, len2);
+    }
+    buf->flag = 0;
+    buf->read = buf->write;
+    return (ret);
 }
