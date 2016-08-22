@@ -13,12 +13,6 @@ int         init_buffer(t_ring_buf *rbuf, int type)
     return (0);
 }
 
-static int  copy_buf(char *dest, char *src, int len)
-{
-    strncpy(dest, src, len);
-    return (len);
-}
-
 int         write_buf(t_ring_buf *buf, char *str, int len)
 {
     int     len2; //chose a better name
@@ -27,7 +21,7 @@ int         write_buf(t_ring_buf *buf, char *str, int len)
     {
         buf->flag = 1;
         if (buf->write + len < buf->end)
-            buf->write += copy_buf(buf->write, str, len);
+            buf->write = stpncpy(buf->write, str, len);
         else
         {
             len2 = buf->end - buf->write;
@@ -38,22 +32,20 @@ int         write_buf(t_ring_buf *buf, char *str, int len)
     }
     else
     {
+        buf->flag = 1;
         if (buf->write + len < buf->read)
-        {
-            strncpy(buf->write, str, len);
-            buf->write += len;
-        }
+            buf->write = stpncpy(buf->write, str, len);
         else
         {
-            strncpy(buf->write, str, (buf->read - buf->write));
-            buf->write = buf->read;
+            buf->write = stpncpy(buf->write, str, (buf->read - buf->write));
+            *(buf->write - 1) = '\n';
             return (1);
         }
     }
     return (0);
 }
 
-static char get_last_char(t_ring_buf *buf)
+char        get_last_char(t_ring_buf *buf)
 {
     return (buf->write == buf->start ? *(buf->end) : *(buf->write - 1));
 }

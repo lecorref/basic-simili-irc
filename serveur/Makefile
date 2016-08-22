@@ -19,11 +19,13 @@ CFLAGS	= -I $(INCDIR) -Wall -Wextra -Werror
 # source files
 SRC		= \
 		  accept.c \
+		  close.c \
 		  error.c \
 		  main.c \
 		  read.c \
 		  ring_buffer.c \
-		  select_loop.c
+		  select_loop.c \
+		  write.c
 
 # obj
 OBJS	= $(patsubst %.c, $(OBJDIR)/%.o, $(SRC))

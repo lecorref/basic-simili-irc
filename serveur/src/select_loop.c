@@ -53,7 +53,7 @@ void    process_select(t_server *serv, t_member **user)
                 ft_read(serv, user[i], i);
         }
         if (FD_ISSET(i, &serv->fd_write))
-            ;//           ft_write(serv, user,i);
+            ft_write(&(user[i]->snd_buf), i);
         if ((FD_ISSET(i, &serv->fd_read)) || (FD_ISSET(i, &serv->fd_write)))
             serv->fd_select--;
         i++;

@@ -59,6 +59,12 @@ enum                e_buff_type{SEND, RECEIVE};
 int         ft_accept(t_server *serv, t_member *user[FD_MAX]);
 
 /*
+ * close.c
+ */
+void        close_client(t_member *user, int id);
+void        exit_server(t_server *serv, t_member **user);
+
+/*
  * error.c
  */
 void        usage(char *name);
@@ -79,6 +85,7 @@ int         ft_read(t_server *serv, t_member *user, int fd);
 /*
  * ring_buffer.c
  */
+char        get_last_char(t_ring_buf *buf);
 int         init_buffer(t_ring_buf *rbuf, int type);
 char        *read_buf(t_ring_buf *buf);
 int         write_buf(t_ring_buf *buf, char *str, int len);
@@ -91,5 +98,9 @@ void         ft_select(t_server *serv);
 void         process_select(t_server *serv, t_member **user);
 void         loop(t_server *serv, t_member **user);
 
+/*
+ * select_loop.c
+ */
+void          ft_write(t_ring_buf *buf, int fd);
 
 #endif

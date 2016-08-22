@@ -43,7 +43,7 @@ int     main(int ac, char **av)
     while (i <= FD_MAX)
     {
         user[i] = malloc(sizeof(t_member));
-        bzero(user[i], sizeof(t_member)); //use memalloc
+        bzero(user[i], sizeof(t_member));
         i++;
     }
     if (ac != 2)
@@ -54,6 +54,7 @@ int     main(int ac, char **av)
     if (get_port(av[1], &port) || init(&serv, user, port))
         return (1);
     loop(&serv, user);
+    exit_server(&serv, user);
     return (0);
 }
 
