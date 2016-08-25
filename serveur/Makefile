@@ -14,17 +14,20 @@ SRCDIR	= $(ROOT)/src
 INCDIR	= $(ROOT)/include
 
 # compil flags
-CFLAGS	= -I $(INCDIR) -Wall -Wextra -Werror
+CFLAGS	= -I $(INCDIR) -Wall -Wextra -Werror -g
 
 # source files
 SRC		= \
 		  accept.c \
 		  close.c \
 		  error.c \
+		  get_commands.c \
 		  main.c \
+		  nick.c \
 		  read.c \
 		  ring_buffer.c \
 		  select_loop.c \
+		  strsplit.c \
 		  write.c
 
 # obj

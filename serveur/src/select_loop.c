@@ -50,7 +50,7 @@ void    process_select(t_server *serv, t_member **user)
             if (user[i]->status == FD_SERVER)
                 ft_accept(serv, user);
             else
-                ft_read(serv, user[i], i);
+                get_commands(serv, user, i);
         }
         if (FD_ISSET(i, &serv->fd_write))
             ft_write(&(user[i]->snd_buf), i);

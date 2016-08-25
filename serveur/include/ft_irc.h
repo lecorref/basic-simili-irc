@@ -14,7 +14,8 @@
 # define FD_MAX 250
 # define FD_FREE 0
 # define FD_SERVER 1
-# define FD_CLIENT 2
+# define FD_UNAMED_CLIENT 2
+# define FD_CLIENT 3
 
 # define READ_MAX 512
 
@@ -24,6 +25,12 @@
 /*
  * structs
  */
+typedef struct      s_cmd
+{
+    int             type;
+    char            **args;
+}                   t_cmd;
+
 typedef struct      s_ring_buf
 {
     size_t          size;
@@ -47,15 +54,18 @@ typedef struct      s_server
 typedef struct      s_member
 {
     int             status;
+    char            name[12];
     t_ring_buf      rcv_buf;
     t_ring_buf      snd_buf;
 }                   t_member;
 
 enum                e_buff_type{SEND, RECEIVE};
+enum                e_cmd_type{NICK, QUIT};
 
 /*
  * accept.c
  */
+int         init_client(t_member *user);
 int         ft_accept(t_server *serv, t_member *user[FD_MAX]);
 
 /*
@@ -71,6 +81,11 @@ void        usage(char *name);
 int         r_error(char *error);
 
 /*
+ * get_commands.c
+ */
+void        get_commands(t_server *serv, t_member **user, int fd);
+
+/*
  * main.c
  */
 int         get_port(char *number, int *port);
@@ -79,8 +94,8 @@ int         init(t_server *serv, t_member **user, int port);
 /*
  * read.c
  */
-int         init_client(t_member *user);
-int         ft_read(t_server *serv, t_member *user, int fd);
+int         ft_read(t_server *serv, t_member **user, int fd);
+void        send_msg(t_server *serv, t_member **user, int fd);
 
 /*
  * ring_buffer.c
@@ -102,5 +117,10 @@ void         loop(t_server *serv, t_member **user);
  * select_loop.c
  */
 void          ft_write(t_ring_buf *buf, int fd);
+
+/*
+ * strsplit.c
+ */
+char        **ft_strsplit(char const *s, char c);
 
 #endif
