@@ -19,19 +19,22 @@ void    parse_cmd(char *line, t_cmd *cmd)
         cmd->type = -2;
 }
 
-void    get_client_name(t_member **user, int fd)
+void    get_client_name(t_cmd cmd, t_member **user, int fd)
 {
-    char        *str;
-
-    if (!(str = read_buf(&(user[fd]->rcv_buf))))
-        return ;
-    if (strncmp("/nick", str, 5))
+    if (cmd.type == NICK && cmd.args[1] != NULL)
     {
-
+        if (is_name_used(user, cmd.args[1]))
+        {
+            strncpy(user[fd]->name, cmd.args[1], 12);
+            user[fd]->status = FD_CLIENT;
+        }
+        else
+            write_buf(&(user[fd]->snd_buf),
+                    "Init error: nickname already in use\n", 36);
     }
     else
-        printf("nick\n");
-    free(str);
+        write_buf(&(user[fd]->snd_buf),
+                "Init error: need nickname (/nick NAME)\n", 39);
 }
 
 void    get_commands(t_server *serv, t_member **user, int fd)
@@ -46,7 +49,8 @@ void    get_commands(t_server *serv, t_member **user, int fd)
     args.type = -1;
     parse_cmd(str, &args);
     if (user[fd]->status == FD_UNAMED_CLIENT)
-        get_client_name(user, fd);
+        get_client_name(args, user, fd);
     else
-        send_msg(serv, user, fd);
+        send_msg(serv, user, str, fd);
+    free(str); //TODO: free args if type != -1.
 }

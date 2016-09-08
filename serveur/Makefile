@@ -19,14 +19,15 @@ CFLAGS	= -I $(INCDIR) -Wall -Wextra -Werror -g
 # source files
 SRC		= \
 		  accept.c \
+		  client.c \
 		  close.c \
 		  error.c \
 		  get_commands.c \
 		  main.c \
-		  nick.c \
 		  read.c \
 		  ring_buffer.c \
 		  select_loop.c \
+		  send.c \
 		  strsplit.c \
 		  write.c
 

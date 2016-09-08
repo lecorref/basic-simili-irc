@@ -50,6 +50,9 @@ char        get_last_char(t_ring_buf *buf)
     return (buf->write == buf->start ? *(buf->end) : *(buf->write - 1));
 }
 
+/*
+ * The -1 is to avoid copying the \n (as i will change it to \r\n)
+ */
 char        *read_buf(t_ring_buf *buf)
 {
     char        *ret;
@@ -61,16 +64,16 @@ char        *read_buf(t_ring_buf *buf)
         return (ret);
     len = buf->write - buf->read;
     if (len > 0)
-        ret = strndup(buf->read, len);
+        ret = strndup(buf->read, (len - 1));
     else
     {
         len = buf->end - buf->read;
         len2 = buf->write - buf->start;
-        if (!(ret = malloc(sizeof(char) * (len + len2) + 1)))
+        if (!(ret = malloc(sizeof(char) * (len + len2))))
             return (NULL);
-        bzero(ret, len + len2 + 1);
+        bzero(ret, len + len2);
         ret = strncpy(ret, buf->read, len);
-        ret = strncat(ret, buf->start, len2);
+        ret = strncat(ret, buf->start, len2 - 1);
     }
     buf->flag = 0;
     buf->read = buf->write;

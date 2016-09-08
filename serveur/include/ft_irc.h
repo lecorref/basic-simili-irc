@@ -69,6 +69,11 @@ int         init_client(t_member *user);
 int         ft_accept(t_server *serv, t_member *user[FD_MAX]);
 
 /*
+ * client.c
+ */
+int         is_name_used(t_member **user, char *name);
+
+/*
  * close.c
  */
 void        close_client(t_member *user, int id);
@@ -95,7 +100,6 @@ int         init(t_server *serv, t_member **user, int port);
  * read.c
  */
 int         ft_read(t_server *serv, t_member **user, int fd);
-void        send_msg(t_server *serv, t_member **user, int fd);
 
 /*
  * ring_buffer.c
@@ -114,13 +118,18 @@ void         process_select(t_server *serv, t_member **user);
 void         loop(t_server *serv, t_member **user);
 
 /*
- * select_loop.c
+ * send.c
  */
-void          ft_write(t_ring_buf *buf, int fd);
+void        send_msg(t_server *serv, t_member **user, char *str, int fd);
 
 /*
  * strsplit.c
  */
 char        **ft_strsplit(char const *s, char c);
+
+/*
+ * write.c
+ */
+void          ft_write(t_ring_buf *buf, int fd);
 
 #endif
