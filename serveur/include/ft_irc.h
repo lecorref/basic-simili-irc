@@ -28,7 +28,8 @@
 typedef struct      s_cmd
 {
     int             type;
-    char            **args;
+    char            *first;
+    char            *rest;
 }                   t_cmd;
 
 typedef struct      s_ring_buf
@@ -59,8 +60,10 @@ typedef struct      s_member
     t_ring_buf      snd_buf;
 }                   t_member;
 
+typedef void (*t_fpointer) (t_cmd, t_member **, int);
+
 enum                e_buff_type{SEND, RECEIVE};
-enum                e_cmd_type{NICK, QUIT};
+enum                e_cmd_type{NICK, MSG, QUIT};
 
 /*
  * accept.c
@@ -71,7 +74,8 @@ int         ft_accept(t_server *serv, t_member *user[FD_MAX]);
 /*
  * client.c
  */
-int         is_name_used(t_member **user, char *name);
+void        get_client_name(t_cmd cmd, t_member **user, int fd);
+int         find_name(t_member **user, char *name);
 
 /*
  * close.c
@@ -120,7 +124,8 @@ void         loop(t_server *serv, t_member **user);
 /*
  * send.c
  */
-void        send_msg(t_server *serv, t_member **user, char *str, int fd);
+void        send_all(t_server *serv, t_member **user, char *str, int fd);
+void        send_msg(t_cmd cmd, t_member **user, int fd);
 
 /*
  * strsplit.c
