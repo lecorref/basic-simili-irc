@@ -42,6 +42,21 @@ typedef struct      s_ring_buf
     char            *write;
 }                   t_ring_buf;
 
+typedef struct      s_member
+{
+    int             status;
+    char            name[12];
+    t_ring_buf      rcv_buf;
+    t_ring_buf      snd_buf;
+}                   t_member;
+
+typedef struct      s_channel
+{
+    char            *name;
+    int             number;
+    //list of users
+}                   t_channel;
+
 typedef struct      s_server
 {
     int             port;
@@ -51,14 +66,6 @@ typedef struct      s_server
     fd_set          fd_read;
     fd_set          fd_write;
 }                   t_server;
-
-typedef struct      s_member
-{
-    int             status;
-    char            name[12];
-    t_ring_buf      rcv_buf;
-    t_ring_buf      snd_buf;
-}                   t_member;
 
 typedef void (*t_fpointer) (t_cmd, t_member **, int);
 

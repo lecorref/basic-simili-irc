@@ -23,6 +23,9 @@ SRC		= \
 		  close.c \
 		  error.c \
 		  get_commands.c \
+		  linked_list_1.c \
+		  linked_list_2.c \
+		  linked_list_3.c \
 		  main.c \
 		  read.c \
 		  ring_buffer.c \

@@ -1,6 +1,8 @@
 # neovim linter crap
 serveur/ft_irc.h
 serveur/src/ft_irc.h
+serveur/linked_list.h
+serveur/src/linked_list.h
 
 # objs
 *.o

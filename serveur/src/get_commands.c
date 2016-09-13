@@ -49,5 +49,5 @@ void    get_commands(t_server *serv, t_member **user, int fd)
         else
             dispatch_cmd(args, user, fd);
     }
-    free(str); //TODO: free args if type != -1.
+    free(str);
 }
