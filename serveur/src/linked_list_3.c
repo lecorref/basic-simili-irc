@@ -77,3 +77,21 @@ void    *lst_first_match(t_lst_head *hd, void *dt, int (*cmp)(void*, void*))
     return (NULL);
 }
 
+t_lst_elem    *lst_match_elem(t_lst_head *hd, void *dt, int (*cmp)(void*, void*))
+{
+    t_lst_elem  *cursor;
+    t_lst_elem  *prev_save;
+
+    if (!hd)
+        return (NULL);
+    cursor = hd->first;
+    while (cursor)
+    {
+        prev_save = cursor;
+        cursor = cursor->next;
+        if (cmp(prev_save->content, dt))
+            return (prev_save);
+    }
+    return (NULL);
+}
+

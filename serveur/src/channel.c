@@ -29,10 +29,23 @@ void    join_channel(t_channel *chan, void *user)
 
 void    leave_channel(t_server *serv, t_cmd args, t_member **user, int fd)
 {
-    (void)serv;
-    (void)args;
-    (void)user;
-    (void)fd;
+    char        *name;
+    t_channel   *chan;
+    t_lst_elem  *client;
+
+    name = strsep(&(args.rest), " ");
+    if (!(chan = lst_first_match(serv->chan_list, name, cmp_channel)))
+        write_buf(&(user[fd]->snd_buf),
+                "Error: This channel doesn't exist\n", 35);
+    else if (!(client = lst_match_elem(chan->user_list,
+                    user[fd]->name, cmp_user)))
+        write_buf(&(user[fd]->snd_buf),
+                "Error: You are not in this channel\n", 36);
+    else
+    {
+        lst_remove(chan->user_list, client);
+        //send message to everyone
+    }
 }
 
 void    find_channel(t_server *serv, t_cmd args, t_member **user, int fd)
