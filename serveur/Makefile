@@ -19,6 +19,7 @@ CFLAGS	= -I $(INCDIR) -Wall -Wextra -Werror -g
 # source files
 SRC		= \
 		  accept.c \
+		  channel.c \
 		  client.c \
 		  close.c \
 		  error.c \

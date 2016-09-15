@@ -28,6 +28,7 @@ int     init(t_server *serv, t_member **user, int port)
     listen(serv->sock, FD_MAX);
     user[serv->sock]->status = FD_SERVER;
     serv->fd_max = serv->sock;
+    serv->chan_list = lst_init(NULL);
     return (0);
 }
 

@@ -10,6 +10,7 @@
 # include <sys/types.h>
 # include <sys/time.h>
 # include <unistd.h>
+# include "linked_list.h"
 
 # define FD_MAX 250
 # define FD_FREE 0
@@ -54,7 +55,7 @@ typedef struct      s_channel
 {
     char            *name;
     int             number;
-    //list of users
+    t_lst_head      *user_list;
 }                   t_channel;
 
 typedef struct      s_server
@@ -63,14 +64,15 @@ typedef struct      s_server
     int             sock;
     unsigned int    fd_max;
     int             fd_select;
+    t_lst_head      *chan_list;
     fd_set          fd_read;
     fd_set          fd_write;
 }                   t_server;
 
-typedef void (*t_fpointer) (t_cmd, t_member **, int);
+typedef void (*t_fpointer) (t_server *, t_cmd, t_member **, int);
 
 enum                e_buff_type{SEND, RECEIVE};
-enum                e_cmd_type{NICK, MSG, QUIT};
+enum                e_cmd_type{NICK, MSG, JOIN, LEAVE, QUIT};
 
 /*
  * accept.c
@@ -79,9 +81,16 @@ int         init_client(t_member *user);
 int         ft_accept(t_server *serv, t_member *user[FD_MAX]);
 
 /*
+ * channel.c
+ */
+void        find_channel(t_server *serv, t_cmd args, t_member **user, int fd);
+void        leave_channel(t_server *serv, t_cmd args, t_member **user, int fd);
+
+/*
  * client.c
  */
-void        get_client_name(t_cmd cmd, t_member **user, int fd);
+int         cmp_user(void *user, void *name);
+void        get_client_name(t_server *serv,t_cmd cmd, t_member **user, int fd);
 int         find_name(t_member **user, char *name);
 
 /*
@@ -132,7 +141,7 @@ void         loop(t_server *serv, t_member **user);
  * send.c
  */
 void        send_all(t_server *serv, t_member **user, char *str, int fd);
-void        send_msg(t_cmd cmd, t_member **user, int fd);
+void        send_msg(t_server *serv, t_cmd cmd, t_member **user, int fd);
 
 /*
  * strsplit.c

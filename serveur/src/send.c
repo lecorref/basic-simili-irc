@@ -23,10 +23,11 @@ void    send_all(t_server *serv, t_member **user, char *str, int fd)
     }
 }
 
-void    send_msg(t_cmd cmd, t_member **user, int fd)
+void    send_msg(t_server *serv, t_cmd cmd, t_member **user, int fd)
 {
     int     rcv_id;
 
+    (void)serv;
     if ((rcv_id = find_name(user, strsep(&(cmd.rest), " "))))
     {
         compose_message(&(user[rcv_id]->snd_buf), user[fd]->name, cmd.rest);

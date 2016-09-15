@@ -1,6 +1,6 @@
 #include "ft_irc.h"
 
-const char  *cmd_list[] = {"/nick", "/msg"};
+const char  *cmd_list[] = {"/nick", "/msg", "/join", "/leave"};
 
 void    parse_cmd(char *line, t_cmd *cmd)
 {
@@ -11,7 +11,7 @@ void    parse_cmd(char *line, t_cmd *cmd)
         return ;
     cmd->first = strsep(&line, " ");
     cmd->rest = line;
-    while (++i < 2)
+    while (++i < 4)
     {
         if (!strncmp(cmd->first, cmd_list[i], strlen(cmd_list[i])))
             cmd->type = i;
@@ -20,11 +20,12 @@ void    parse_cmd(char *line, t_cmd *cmd)
         cmd->type = -2;
 }
 
-void    dispatch_cmd(t_cmd args, t_member **user, int fd)
+void    dispatch_cmd(t_server *serv, t_cmd args, t_member **user, int fd)
 {
-    t_fpointer cmd_pointer[2] = {get_client_name, send_msg};
+    t_fpointer cmd_pointer[4] = {
+        get_client_name, send_msg, find_channel, leave_channel};
 
-    cmd_pointer[args.type](args, user, fd);
+    cmd_pointer[args.type](serv, args, user, fd);
 }
 
 void    get_commands(t_server *serv, t_member **user, int fd)
@@ -41,13 +42,13 @@ void    get_commands(t_server *serv, t_member **user, int fd)
     args.type = -1;
     parse_cmd(tmp, &args);
     if (user[fd]->status == FD_UNAMED_CLIENT)
-        get_client_name(args, user, fd);
+        get_client_name(serv, args, user, fd);
     else
     {
         if (args.type == -1)
             send_all(serv, user, str, fd);
-        else
-            dispatch_cmd(args, user, fd);
+        else if (args.type >= 0)
+            dispatch_cmd(serv, args, user, fd);
     }
     free(str);
 }
