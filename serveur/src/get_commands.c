@@ -7,10 +7,14 @@ void    parse_cmd(char *line, t_cmd *cmd)
     int     i;
 
     i = -1;
-    if (line[0] != '/')
-        return ;
     cmd->first = strsep(&line, " ");
     cmd->rest = line;
+    if (cmd->first[0] != '/')
+    {
+        if (cmd->first[0] != '#')
+            cmd->type = -2;
+        return ;
+    }
     while (++i < 4)
     {
         if (!strncmp(cmd->first, cmd_list[i], strlen(cmd_list[i])))
@@ -46,9 +50,12 @@ void    get_commands(t_server *serv, t_member **user, int fd)
     else
     {
         if (args.type == -1)
-            send_all(serv, user, str, fd);
+            send_all(serv, args, user, fd);
         else if (args.type >= 0)
             dispatch_cmd(serv, args, user, fd);
+        else
+            write_buf(&(user[fd]->snd_buf),
+                    "Error: cannot resolve: please join a channel\n", 46);
     }
     free(str);
 }

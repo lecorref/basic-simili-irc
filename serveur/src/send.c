@@ -1,26 +1,50 @@
 #include "ft_irc.h"
 
-void    compose_message(t_ring_buf *buf, char name[12], char *cpy)
+void    compose_message(t_ring_buf *buf, int num_args, ...)
 {
-    /*
-     * TODO: add channel name or user name in private discussions
-     */
-    write_buf(buf, name, 12);
-    write_buf(buf, ": ", 2);
-    write_buf(buf, cpy, strlen(cpy));
+    int         i;
+    va_list     ap;
+    char        *tmp;
+
+    i = 0;
+    va_start(ap, num_args);
+    while (i < num_args)
+    {
+        tmp = va_arg(ap, char *);
+        if (tmp)
+            write_buf(buf, tmp, strlen(tmp));
+        i++;
+    }
+    va_end(ap);
     write_buf(buf, "\n", 1);
 }
 
-void    send_all(t_server *serv, t_member **user, char *str, int fd)
+void    send_channel(t_channel *chan, char *str, t_member **user, int fd)
 {
-    int     i;
+    t_lst_elem  *tmp;
 
-    i = 2;
-    while (++i <= (int)serv->fd_max)
+    tmp = chan->user_list->first;
+    while (tmp)
     {
-        if (user[i]->status == FD_CLIENT)
-            compose_message(&(user[i]->snd_buf), user[fd]->name, str);
+        compose_message(&(((t_member *)tmp->content)->snd_buf), 5,
+                chan->name, " ", user[fd]->name, ": ", str);
+        tmp = tmp->next;
     }
+}
+
+void    send_all(t_server *serv, t_cmd cmd, t_member **user, int fd)
+{
+    t_channel    *chan;
+
+    if (!(chan = lst_first_match(serv->chan_list, cmd.first, cmp_channel)))
+        write_buf(&(user[fd]->snd_buf),
+                "Error: This channel doesn't exist\n", 35);
+    else if (!(lst_first_match(chan->user_list,
+                    user[fd]->name, cmp_user)))
+        write_buf(&(user[fd]->snd_buf),
+                "Error: You are not in this channel\n", 36);
+    else
+        send_channel(chan, cmd.rest, user, fd);
 }
 
 void    send_msg(t_server *serv, t_cmd cmd, t_member **user, int fd)
@@ -28,11 +52,16 @@ void    send_msg(t_server *serv, t_cmd cmd, t_member **user, int fd)
     int     rcv_id;
 
     (void)serv;
-    if ((rcv_id = find_name(user, strsep(&(cmd.rest), " "))))
+    if (cmd.rest)
     {
-        compose_message(&(user[rcv_id]->snd_buf), user[fd]->name, cmd.rest);
-        compose_message(&(user[fd]->snd_buf), user[fd]->name, cmd.rest);
+        if ((rcv_id = find_name(user, strsep(&(cmd.rest), " "))))
+        {
+            compose_message(&(user[rcv_id]->snd_buf), 6,
+                    "@",  user[fd]->name, " ", user[fd]->name, ": ", cmd.rest);
+            compose_message(&(user[fd]->snd_buf), 6,
+                    "@",  user[rcv_id]->name , " ", user[fd]->name, ": ", cmd.rest);
+        }
+        else
+            write_buf(&(user[fd]->snd_buf), "Error: user not found\n", 23);
     }
-    else
-        write_buf(&(user[fd]->snd_buf), "Error: user not found\n", 23);
 }

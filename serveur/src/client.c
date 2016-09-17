@@ -18,7 +18,7 @@ int     find_name(t_member **user, char *name)
 
 int     cmp_user(void *user, void *name)
 {
-    return strncmp(((t_member *)user)->name, (char *)name, 12);
+    return !strncmp(((t_member *)user)->name, (char *)name, 12);
 }
 
 void    get_client_name(t_server *serv, t_cmd cmd, t_member **user, int fd)

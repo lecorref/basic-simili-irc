@@ -2,6 +2,7 @@
 # define FT_IRC_H
 
 # include <netdb.h>
+# include <stdarg.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -83,6 +84,7 @@ int         ft_accept(t_server *serv, t_member *user[FD_MAX]);
 /*
  * channel.c
  */
+int         cmp_channel(void *channel, void *name);
 void        find_channel(t_server *serv, t_cmd args, t_member **user, int fd);
 void        leave_channel(t_server *serv, t_cmd args, t_member **user, int fd);
 
@@ -140,7 +142,8 @@ void         loop(t_server *serv, t_member **user);
 /*
  * send.c
  */
-void        send_all(t_server *serv, t_member **user, char *str, int fd);
+void        send_channel(t_channel *chan, char *str, t_member **user, int fd);
+void        send_all(t_server *serv, t_cmd cmd, t_member **user, int fd);
 void        send_msg(t_server *serv, t_cmd cmd, t_member **user, int fd);
 
 /*
