@@ -29,6 +29,12 @@ static int  ft_select(t_client *client)
 
 void        main_loop(t_client *client)
 {
+    t_str_in        input;
+    t_term          term;
+    int             c;
+
+    bzero(&input, sizeof(input));
+    init_ncurse(&term);
     while (g_continue)
     {
         signal(SIGINT, int_handler);
@@ -38,7 +44,16 @@ void        main_loop(t_client *client)
             ; //receive message from server
         if (FD_ISSET(STDIN_FILENO, &client->fd_read))
             ;//read message rom input
+        if ((c = getch()) > 0)
+        {
+            get_input(&input, c);
+            mvwprintw(term.input_win, 0, 0, "channel_name");
+            mvwprintw(term.input_win, 1, 0, "$> %s", input.str);
+            wmove(term.input_win, term.in_y + 1, term.in_x + input.pos + 3);
+            wrefresh(term.input_win);
+        }
     }
+    endwin();
 }
 
 

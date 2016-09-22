@@ -2,6 +2,7 @@
 # define CLIENT_H
 
 # include <arpa/inet.h>
+# include <ctype.h>
 # include <ncurses.h>
 # include <netdb.h>
 # include <netinet/in.h>
@@ -13,12 +14,29 @@
 # include <sys/types.h>
 # include <sys/socket.h>
 
+# define BUFF 150
+
 typedef struct  s_client
 {
     int         sock;
     int         port;
     fd_set      fd_read;
 }               t_client;
+
+typedef struct  s_str_in
+{
+    int         size;
+    int         pos;
+    char        str[BUFF];
+}               t_str_in;
+
+typedef struct  s_term
+{
+    int         in_x;
+    int         in_y;
+    WINDOW      *input_win;
+    WINDOW      *output_win;
+}               t_term;
 
 /*
  * error.c
@@ -31,9 +49,19 @@ int         pr_error(const char *error);
 int         init_client(t_client *init, char **args);
 
 /*
+ * input.c
+ */
+void        get_input(t_str_in *input, int c);
+
+/*
  * loop.c
  */
 void        int_handler(int dummy);
 void        main_loop(t_client *client);
+
+/*
+ * ncurses.c
+ */
+void        init_ncurse(t_term *term);
 
 #endif

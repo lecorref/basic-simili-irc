@@ -23,8 +23,10 @@ LIBS = -L $(LIBDIR) -llinked_list -lncurses
 SRC		= \
 		  error.c \
 		  init.c \
+		  input.c \
 		  loop.c \
-		  main.c
+		  main.c \
+		  ncurse.c
 
 # obj
 OBJS	= $(patsubst %.c, $(OBJDIR)/%.o, $(SRC))
@@ -35,7 +37,7 @@ all: $(OBJDIR) $(NAME)
 
 $(NAME): $(OBJS)
 	$(MAKE) -C $(LIBDIR)
-	@echo "Compiling server..."
+	@echo "Compiling client..."
 	@$(CC) $(OBJS) -o $@ $(LIBS) $(CFLAGS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
