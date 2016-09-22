@@ -5,7 +5,7 @@ static void add_char(t_str_in *input, char c)
     int     pos;
 
     pos = input->pos;
-    if (input->size < BUFF)
+    if (input->size < BUFF - 1)
     {
         memmove(input->str + pos + 1, input->str + pos, input->size - pos);
         input->str[input->pos++] = c;
@@ -52,10 +52,14 @@ static void delete(t_str_in *input)
         beep();
 }
 
-void        get_input(t_str_in *input, int c)
+void        get_input(t_str_in *input, t_term *term, t_client *client, int c)
 {
     if (c == KEY_ENTER || c == '\n' || c == '\r')
-        ;//parse command
+    {
+        get_command(input, client);
+        wclear(term->input_win);
+        box(term->input_win, 0 , 0);
+    }
     else if (isprint(c))
         add_char(input, c);
     else if (c == KEY_LEFT)
@@ -70,35 +74,3 @@ void        get_input(t_str_in *input, int c)
         beep();
     input->str[input->size] = ' ';
 }
-/*
-static void readline(char *buffer, int buflen)
-{
-  int old_curs = curs_set(1);
-  int pos = 0;
-  int len = 0;
-  int x, y;
-
-  getyx(stdscr, y, x);
-  for (;;) {
-    int c;
-
-    buffer[len] = ' ';
-    mvaddnstr(y, x, buffer, len+1);
-    move(y, x+pos);
-    c = getch();
-
-    } else if (c == KEY_DC) {
-      if (pos < len) {
-        memmove(buffer+pos, buffer+pos+1, len-pos-1);
-        len -= 1;
-      } else {
-        beep();
-      }
-    } else {
-      beep();
-    }
-  }
-  buffer[len] = '\0';
-  if (old_curs != ERR) curs_set(old_curs);
-}
-*/

@@ -11,9 +11,12 @@ void        int_handler(int dummy)
 static void init_select(t_client *client)
 {
     FD_ZERO(&client->fd_read);
+    FD_ZERO(&client->fd_write);
     if (client->port)
+    {
         FD_SET(client->sock, &client->fd_read);
-    FD_SET(STDIN_FILENO, &client->fd_read);
+        FD_SET(client->sock, &client->fd_write);
+    }
 }
 
 static int  ft_select(t_client *client)
@@ -23,8 +26,9 @@ static int  ft_select(t_client *client)
     time.tv_sec = 0;
     time.tv_usec = 0;
     if (client->port)
-        return (select(client->sock + 1, &client->fd_read, NULL, NULL, &time));
-    return (select(STDIN_FILENO + 1, &client->fd_read, NULL, NULL, &time));
+        return (select(client->sock + 1, &client->fd_read,
+                    &client->fd_write, NULL, &time));
+    return (0);
 }
 
 void        main_loop(t_client *client)
@@ -32,21 +36,21 @@ void        main_loop(t_client *client)
     t_str_in        input;
     t_term          term;
     int             c;
+    int             select;
 
     bzero(&input, sizeof(input));
     init_ncurse(&term);
     while (g_continue)
     {
         signal(SIGINT, int_handler);
+        usleep(10);
         init_select(client);
-        ft_select(client);
-        if (client->port && FD_ISSET(client->sock, &client->fd_read))
-            ; //receive message from server
-        if (FD_ISSET(STDIN_FILENO, &client->fd_read))
-            ;//read message rom input
+        select = ft_select(client);
+        if (select && FD_ISSET(client->sock, &client->fd_read))
+            get_message(&term, client); //receive message from server
         if ((c = getch()) > 0)
         {
-            get_input(&input, c);
+            get_input(&input, &term, client, c);
             mvwprintw(term.input_win, 0, 0, "channel_name");
             mvwprintw(term.input_win, 1, 0, "$> %s", input.str);
             wmove(term.input_win, term.in_y + 1, term.in_x + input.pos + 3);

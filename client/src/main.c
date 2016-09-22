@@ -10,7 +10,7 @@ int         main(int ac, char **av)
     if (ac > 1)
     {
         if (init_client(&init, av + 1))
-            return (1);
+            return (pr_error("Cannot etablish connection with the server"));
     }
     main_loop(&init);
 }

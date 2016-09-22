@@ -22,5 +22,4 @@ void            init_ncurse(t_term *term)
     term->output_win = create_window(LINES - 3, 0, 0, 0);
     term->input_win = create_window(0, 0, LINES - 3, 0);
     getyx(term->input_win, term->in_y, term->in_x);
-    wrefresh(term->input_win);
 }

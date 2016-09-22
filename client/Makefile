@@ -16,17 +16,20 @@ LIBDIR	= $(ROOT)/../lib
 LFTINC	= $(LIBDIR)/include
 
 # compil flags
-CFLAGS	= -I $(INCDIR) -I $(LFTINC) -Wall -Wextra -Werror
+CFLAGS	= -I $(INCDIR) -I $(LFTINC) -Wall -Wextra -Werror -g
 LIBS = -L $(LIBDIR) -llinked_list -lncurses
 
 # source files
 SRC		= \
+		  commands.c \
 		  error.c \
 		  init.c \
 		  input.c \
 		  loop.c \
+		  message.c \
 		  main.c \
-		  ncurse.c
+		  ncurse.c \
+		  strsplit.c
 
 # obj
 OBJS	= $(patsubst %.c, $(OBJDIR)/%.o, $(SRC))
