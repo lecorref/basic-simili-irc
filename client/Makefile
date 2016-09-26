@@ -21,6 +21,7 @@ LIBS = -L $(LIBDIR) -llinked_list -lncurses
 
 # source files
 SRC		= \
+		  channel.c \
 		  commands.c \
 		  error.c \
 		  init.c \
@@ -29,6 +30,7 @@ SRC		= \
 		  message.c \
 		  main.c \
 		  ncurse.c \
+		  strjoin.c \
 		  strsplit.c
 
 # obj

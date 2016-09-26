@@ -1,26 +1,60 @@
 #include "client.h"
 
-int     ft_read(t_client *client)
+static char *join(char *str, char *buf)
+{
+    char    *ret;
+
+    ret = ft_strjoin(str, buf);
+    if (str != NULL)
+        free(str);
+    return (ret);
+}
+
+static void put_in_chan(t_lst_head *chan, char *str)
+{
+    char            *name;
+    t_channel       *content;
+
+    name = strsep(&str, " ");
+    if ((content = lst_first_match(chan, name, cmp_chan)))
+        lst_pushback(content->msg, lst_create(str, strlen(str))); //del mess > 500
+    else
+    {
+        if (!(content = malloc(sizeof(t_channel))))
+            return ;
+        content->name = strdup(name);
+        content->msg = lst_init(lst_create(str, strlen(str)));
+        if (chan == NULL)
+            chan = lst_init(lst_create_no_malloc(content));
+        else
+            lst_pushback(chan, lst_create_no_malloc(content));
+    }
+}
+
+static int  ft_read(t_client *client, t_lst_head *chans)
 {
     int     ret;
     char    buf[READ_MAX];
+    char    *tmp;
 
     ret = READ_MAX;
+    tmp = NULL;
     while (ret == READ_MAX)
     {
         bzero(buf, READ_MAX);
         if ((ret = read(client->sock, buf, READ_MAX)) <= 0)
             return (-1); //close client
-        printf("%s\n", buf); //put response in linked_list
+        tmp = join(tmp, buf);
     }
+    put_in_chan(chans, tmp);
+    free(tmp);
     return (ret);
 }
 
-int     get_message(t_term *term, t_client *client)
+int         get_message(t_term *term, t_client *client, t_lst_head *chans)
 {
-    ft_read(client);
-    (void)term;
-    //do stuff with the window
+    ft_read(client, chans);
+    print_window(term->output_win, chans);
     return (0);
 }
 

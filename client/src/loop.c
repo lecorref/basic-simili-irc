@@ -31,7 +31,7 @@ static int  ft_select(t_client *client)
     return (0);
 }
 
-void        main_loop(t_client *client)
+void        main_loop(t_client *client, t_lst_head *chan)
 {
     t_str_in        input;
     t_term          term;
@@ -47,7 +47,7 @@ void        main_loop(t_client *client)
         init_select(client);
         select = ft_select(client);
         if (select && FD_ISSET(client->sock, &client->fd_read))
-            get_message(&term, client); //receive message from server
+            get_message(&term, client, chan);
         if ((c = getch()) > 0)
         {
             get_input(&input, &term, client, c);

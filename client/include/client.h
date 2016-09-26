@@ -13,9 +13,16 @@
 # include <string.h>
 # include <sys/types.h>
 # include <sys/socket.h>
+# include "linked_list.h"
 
 # define BUFF 150
 # define READ_MAX 1024
+
+typedef struct  s_channel
+{
+    char        *name;
+    t_lst_head  *msg;
+}               t_channel;
 
 typedef struct  s_client
 {
@@ -41,6 +48,11 @@ typedef struct  s_term
 }               t_term;
 
 /*
+ * channel.c
+ */
+int         cmp_chan(void *chan, void *str);
+
+/*
  * commands.c
  */
 void        get_command(t_str_in *to_send, t_client *client);
@@ -64,17 +76,23 @@ void        get_input(t_str_in *input, t_term *term, t_client *client, int c);
  * loop.c
  */
 void        int_handler(int dummy);
-void        main_loop(t_client *client);
+void        main_loop(t_client *client, t_lst_head *chan);
 
 /*
  * message.c
  */
-int     get_message(t_term *term, t_client *client);
+int         get_message(t_term *term, t_client *client, t_lst_head *chan);
 
 /*
  * ncurses.c
  */
 void        init_ncurse(t_term *term);
+void        print_window(WINDOW *win, t_lst_head *chan);
+
+/*
+ * strjoin.c
+ */
+char        *ft_strjoin(char const *s1, char const *s2);
 
 /*
  * strsplit.c

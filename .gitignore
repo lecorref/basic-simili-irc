@@ -3,9 +3,15 @@ serveur/ft_irc.h
 serveur/src/ft_irc.h
 serveur/linked_list.h
 serveur/src/linked_list.h
+client/src/linked_list.h
+client/src/client.h
 
 # objs
 *.o
 
+# libs
+*.a
+
 # bin
-serveur/ft_irc
+client/client
+serveur/serveur
