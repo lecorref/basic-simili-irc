@@ -1,18 +1,30 @@
 #include "client.h"
 
-static void send_command(t_str_in *to_send, t_client *client)
+static void send_command(t_str_in *to_send, t_client *client, t_lst_head *chan)
 {
+    char    *c_name;
+
     to_send->str[to_send->size++] = '\n';
     if (to_send->str[0] == '/')
         write(client->sock, to_send->str, to_send->size);
     else
     {
-        //channel stuff when channel will be implemented
+        if (chan && chan->first)
+        {
+            c_name = ((t_channel *)chan->first->content)->name;
+            if (c_name[0] == '#' || c_name[0] == '@')
+            {
+                write(client->sock, c_name, strlen(c_name));
+                write(client->sock, " ", 1);
+            }
+            else
+                beep();
+        }
         write(client->sock, to_send->str, to_send->size);
     }
 }
 
-void        get_command(t_str_in *to_send, t_client *client)
+void        get_command(t_str_in *to_send, t_client *client, t_lst_head *chan)
 {
     char    **tmp;
 
@@ -27,6 +39,6 @@ void        get_command(t_str_in *to_send, t_client *client)
         free_tab(tmp);
     }
     else if (FD_ISSET(client->sock, &client->fd_write))
-        send_command(to_send, client);
+        send_command(to_send, client, chan);
     bzero(to_send, sizeof(t_str_in));
 }

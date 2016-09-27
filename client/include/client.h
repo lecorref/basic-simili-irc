@@ -34,6 +34,7 @@ typedef struct  s_client
 
 typedef struct  s_str_in
 {
+    int         c;
     int         size;
     int         pos;
     char        str[BUFF];
@@ -51,11 +52,13 @@ typedef struct  s_term
  * channel.c
  */
 int         cmp_chan(void *chan, void *str);
+void        right_chan(t_lst_head *chan, t_term *term);
+void        left_chan(t_lst_head *chan, t_term *term);
 
 /*
  * commands.c
  */
-void        get_command(t_str_in *to_send, t_client *client);
+void        get_command(t_str_in *to_send, t_client *client, t_lst_head *chan);
 
 /*
  * error.c
@@ -70,7 +73,8 @@ int         init_client(t_client *init, char **args);
 /*
  * input.c
  */
-void        get_input(t_str_in *input, t_term *term, t_client *client, int c);
+void        get_input(t_str_in *input, t_term *term,
+                        t_client *client, t_lst_head *chan);
 
 /*
  * loop.c
@@ -81,13 +85,15 @@ void        main_loop(t_client *client, t_lst_head *chan);
 /*
  * message.c
  */
-int         get_message(t_term *term, t_client *client, t_lst_head *chan);
+int         get_message(t_term *term, t_client *client,
+                            t_lst_head *chan, t_str_in input);
 
 /*
  * ncurses.c
  */
 void        init_ncurse(t_term *term);
 void        print_window(WINDOW *win, t_lst_head *chan);
+void        input_win(t_term *term, char *str, int pos, t_lst_head *chans);
 
 /*
  * strjoin.c

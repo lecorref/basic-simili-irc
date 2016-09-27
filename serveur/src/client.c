@@ -33,9 +33,9 @@ void    get_client_name(t_server *serv, t_cmd cmd, t_member **user, int fd)
         }
         else
             write_buf(&(user[fd]->snd_buf),
-                    "Init error: nickname already in use\n", 36);
+                    "info Error: nickname already in use\n", 41);
     }
     else
         write_buf(&(user[fd]->snd_buf),
-                "Init error: need nickname (/nick NAME)\n", 39);
+                "info Error: need nickname (/nick NAME)\n", 40);
 }

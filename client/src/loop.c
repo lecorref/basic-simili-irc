@@ -35,7 +35,6 @@ void        main_loop(t_client *client, t_lst_head *chan)
 {
     t_str_in        input;
     t_term          term;
-    int             c;
     int             select;
 
     bzero(&input, sizeof(input));
@@ -47,14 +46,11 @@ void        main_loop(t_client *client, t_lst_head *chan)
         init_select(client);
         select = ft_select(client);
         if (select && FD_ISSET(client->sock, &client->fd_read))
-            get_message(&term, client, chan);
-        if ((c = getch()) > 0)
+            get_message(&term, client, chan, input);
+        if ((input.c = getch()) > 0)
         {
-            get_input(&input, &term, client, c);
-            mvwprintw(term.input_win, 0, 0, "channel_name");
-            mvwprintw(term.input_win, 1, 0, "$> %s", input.str);
-            wmove(term.input_win, term.in_y + 1, term.in_x + input.pos + 3);
-            wrefresh(term.input_win);
+            get_input(&input, &term, client, chan);
+            input_win(&term, input.str, input.pos, chan);
         }
     }
     endwin();

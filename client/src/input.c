@@ -52,24 +52,29 @@ static void delete(t_str_in *input)
         beep();
 }
 
-void        get_input(t_str_in *input, t_term *term, t_client *client, int c)
+void        get_input(t_str_in *input, t_term *term,
+                        t_client *client, t_lst_head *chan)
 {
-    if (c == KEY_ENTER || c == '\n' || c == '\r')
+    if (input->c == KEY_ENTER || input->c == '\n' || input->c == '\r')
     {
-        get_command(input, client);
+        get_command(input, client, chan);
         wclear(term->input_win);
         box(term->input_win, 0 , 0);
     }
-    else if (isprint(c))
-        add_char(input, c);
-    else if (c == KEY_LEFT)
+    else if (isprint(input->c))
+        add_char(input, input->c);
+    else if (input->c == KEY_LEFT)
         move_cursor(input, -1);
-    else if (c == KEY_RIGHT)
+    else if (input->c == KEY_RIGHT)
         move_cursor(input, 1);
-    else if (c == KEY_BACKSPACE)
+    else if (input->c == KEY_BACKSPACE)
         backspace(input);
-    else if (c == KEY_DC)
+    else if (input->c == KEY_DC)
         delete(input);
+    else if (input->c == KEY_PPAGE)
+        right_chan(chan, term);
+    else if (input->c == KEY_NPAGE)
+        left_chan(chan, term);
     else
         beep();
     input->str[input->size] = ' ';

@@ -10,7 +10,7 @@ static char *join(char *str, char *buf)
     return (ret);
 }
 
-static void put_in_chan(t_lst_head *chan, char *str)
+static int  put_in_chan(t_lst_head *chan, char *str)
 {
     char            *name;
     t_channel       *content;
@@ -21,14 +21,16 @@ static void put_in_chan(t_lst_head *chan, char *str)
     else
     {
         if (!(content = malloc(sizeof(t_channel))))
-            return ;
+            return (0);
         content->name = strdup(name);
         content->msg = lst_init(lst_create(str, strlen(str)));
         if (chan == NULL)
             chan = lst_init(lst_create_no_malloc(content));
         else
             lst_pushback(chan, lst_create_no_malloc(content));
+        return (1);
     }
+    return (0);
 }
 
 static int  ft_read(t_client *client, t_lst_head *chans)
@@ -43,18 +45,22 @@ static int  ft_read(t_client *client, t_lst_head *chans)
     {
         bzero(buf, READ_MAX);
         if ((ret = read(client->sock, buf, READ_MAX)) <= 0)
-            return (-1); //close client
+            return (-1);
         tmp = join(tmp, buf);
     }
-    put_in_chan(chans, tmp);
+    ret = put_in_chan(chans, tmp);
     free(tmp);
     return (ret);
 }
 
-int         get_message(t_term *term, t_client *client, t_lst_head *chans)
+int         get_message(t_term *term, t_client *client,
+                            t_lst_head *chans, t_str_in input)
 {
-    ft_read(client, chans);
+    int     ret;
+
+    ret = ft_read(client, chans);
     print_window(term->output_win, chans);
-    return (0);
+    input_win(term, input.str, input.pos, chans);
+    return (ret);
 }
 
