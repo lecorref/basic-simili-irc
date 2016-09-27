@@ -1,5 +1,11 @@
 #include "client.h"
 
+int         usage(void)
+{
+    printf("./client [machine [port]]\n");
+    return (1);
+}
+
 int         main(int ac, char **av)
 {
     t_client    init;
@@ -8,7 +14,7 @@ int         main(int ac, char **av)
     bzero(&chan, sizeof(chan));
     bzero(&init, sizeof(t_client));
     if (ac > 3)
-        ;//print usage and return
+        return (usage());
     if (ac > 1)
     {
         if (init_client(&init, av + 1))

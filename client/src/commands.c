@@ -12,9 +12,15 @@ static void send_command(t_str_in *to_send, t_client *client, t_lst_head *chan)
         if (chan && chan->first)
         {
             c_name = ((t_channel *)chan->first->content)->name;
-            if (c_name[0] == '#' || c_name[0] == '@')
+            if (c_name[0] == '#')
             {
                 write(client->sock, c_name, strlen(c_name));
+                write(client->sock, " ", 1);
+            }
+            else if (c_name[0] == '@')
+            {
+                write(client->sock, "/msg ", 5);
+                write(client->sock, c_name + 1, strlen(c_name + 1));
                 write(client->sock, " ", 1);
             }
             else

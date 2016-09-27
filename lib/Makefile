@@ -22,7 +22,8 @@ CFLAGS	= -I $(INCDIR) -Wall -Wextra -Werror
 SRC		= \
 		  linked_list_1.c \
 		  linked_list_2.c \
-		  linked_list_3.c
+		  linked_list_3.c \
+		  linked_list_4.c
 
 # obj
 OBJS	= $(patsubst %.c, $(OBJDIR)/%.o, $(SRC))

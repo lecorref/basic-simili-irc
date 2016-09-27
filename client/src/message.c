@@ -14,20 +14,25 @@ static int  put_in_chan(t_lst_head *chan, char *str)
 {
     char            *name;
     t_channel       *content;
+    t_lst_elem      *elem;
 
     name = strsep(&str, " ");
     if ((content = lst_first_match(chan, name, cmp_chan)))
-        lst_pushback(content->msg, lst_create(str, strlen(str))); //del mess > 500
+    {
+        lst_pushback(content->msg, lst_create(str, strlen(str) + 1));
+        if (content->msg->size > 200)
+        {
+            elem = lst_pop(content->msg, 0);
+            lst_delete_elem(&elem, free);
+        }
+    }
     else
     {
         if (!(content = malloc(sizeof(t_channel))))
             return (0);
         content->name = strdup(name);
-        content->msg = lst_init(lst_create(str, strlen(str)));
-        if (chan == NULL)
-            chan = lst_init(lst_create_no_malloc(content));
-        else
-            lst_pushback(chan, lst_create_no_malloc(content));
+        content->msg = lst_init(lst_create_no_malloc(strdup(str)));
+        lst_pushback(chan, lst_create_no_malloc(content));
         return (1);
     }
     return (0);

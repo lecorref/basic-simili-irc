@@ -54,6 +54,7 @@ typedef struct  s_term
 int         cmp_chan(void *chan, void *str);
 void        right_chan(t_lst_head *chan, t_term *term);
 void        left_chan(t_lst_head *chan, t_term *term);
+void        free_chan(void *content);
 
 /*
  * commands.c

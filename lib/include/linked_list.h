@@ -36,5 +36,7 @@ void            *lst_first_match(t_lst_head *hd, void *dt \
                             , int (*cmp)(void*, void*));
 t_lst_elem      *lst_match_elem(t_lst_head *hd, void *dt, \
                                 int (*cmp)(void*, void*));
+void            rotate_left(t_lst_head *head);
+void            rotate_right(t_lst_head *head);
 
 #endif

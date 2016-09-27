@@ -46,13 +46,17 @@ void        main_loop(t_client *client, t_lst_head *chan)
         init_select(client);
         select = ft_select(client);
         if (select && FD_ISSET(client->sock, &client->fd_read))
-            get_message(&term, client, chan, input);
+        {
+            if (get_message(&term, client, chan, input) < 0)
+                g_continue = 0;
+        }
         if ((input.c = getch()) > 0)
         {
             get_input(&input, &term, client, chan);
             input_win(&term, input.str, input.pos, chan);
         }
     }
+    lst_delete(chan, free_chan);
     endwin();
 }
 
