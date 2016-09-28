@@ -10,6 +10,14 @@ int         init_client(t_member *user)
     return (0);
 }
 
+static int  to_many_client(t_server *serv, int fd)
+{
+    write(fd, "info Error: cannot accept any new connexion\n", 45);
+    serv->fd_max++;
+    close(fd);
+    return (1);
+}
+
 int         ft_accept(t_server *serv, t_member **user)
 {
     int                 new_user;
@@ -23,7 +31,7 @@ int         ft_accept(t_server *serv, t_member **user)
     if (sin_len > serv->fd_max)
         serv->fd_max++;
     if (serv->fd_max > FD_MAX)
-        ;//close new fd then exit and log bad entry
+        return (to_many_client(serv, new_user));
     init_client(user[new_user]);
     return (0);
 }

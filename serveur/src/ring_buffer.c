@@ -15,7 +15,7 @@ int         init_buffer(t_ring_buf *rbuf, int type)
 
 int         write_buf(t_ring_buf *buf, char *str, int len)
 {
-    int     len2; //chose a better name
+    int     len2;
 
     if (buf->write > buf->read || (buf->write == buf->read && buf->flag == 0))
     {
@@ -51,7 +51,7 @@ char        get_last_char(t_ring_buf *buf)
 }
 
 /*
- * The -1 is to avoid copying the \n (as i will change it to \r\n)
+ * The -1 is to avoid copying the \n
  */
 char        *read_buf(t_ring_buf *buf)
 {

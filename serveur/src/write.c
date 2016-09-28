@@ -5,7 +5,7 @@ void    ft_write(t_ring_buf *buf, int fd)
 {
     int     len;
 
-    if (buf->flag == 0)
+    if (!buf || buf->flag == 0)
         return ;
     len = buf->write - buf->read;
     if (len > 0)

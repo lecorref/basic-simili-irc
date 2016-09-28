@@ -1,13 +1,13 @@
 #include "ft_irc.h"
 
-int     get_port(char *number, int *port)
+static int  get_port(char *number, int *port)
 {
     if ((*port = atoi(number)) <= 0)
         return (1);
     return (0);
 }
 
-int     init(t_server *serv, t_member **user, int port)
+static int  init(t_server *serv, t_member **user, int port)
 {
     struct protoent     *proto;
     struct sockaddr_in  sin;
@@ -32,7 +32,23 @@ int     init(t_server *serv, t_member **user, int port)
     return (0);
 }
 
-int     main(int ac, char **av)
+static void free_nothing(void *nil)
+{
+    (void)nil;
+}
+
+static void free_chan(void *elem)
+{
+    t_channel   *chan;
+
+    chan = elem;
+    free(chan->name);
+    lst_delete(chan->user_list, free_nothing);
+    free(chan->user_list);
+    free(chan);
+}
+
+int         main(int ac, char **av)
 {
     int         port;
     t_server    serv;
@@ -40,22 +56,24 @@ int     main(int ac, char **av)
     int         i;
 
     i = 0;
-    user = malloc(sizeof(t_member *) * FD_MAX);
+    if (ac != 2)
+    {
+        usage(av[0]);
+        return (1);
+    }
+    user = malloc(sizeof(t_member *) * (FD_MAX + 1));
     while (i <= FD_MAX)
     {
         user[i] = malloc(sizeof(t_member));
         bzero(user[i], sizeof(t_member));
         i++;
     }
-    if (ac != 2)
-    {
-        usage(av[0]);
-        return (1);
-    }
     if (get_port(av[1], &port) || init(&serv, user, port))
         return (1);
     loop(&serv, user);
     exit_server(&serv, user);
+    lst_delete(serv.chan_list, free_chan);
+    free(serv.chan_list);
     return (0);
 }
 

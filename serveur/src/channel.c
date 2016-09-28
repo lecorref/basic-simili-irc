@@ -5,14 +5,13 @@ int     cmp_channel(void *channel, void *name)
     return !strcmp(((t_channel *)channel)->name, (char *)name);
 }
 
-void    *init_channel(char *name, void *member)
+void    *init_channel(char *name)
 {
     t_channel   *new;
 
     if (!(new = (t_channel *)malloc(sizeof(t_channel))))
         return (NULL);
     new->user_list = lst_init(NULL);
-    (void)member; // del?
     new->number = 0;
     new->name = strdup(name);
     return (new);
@@ -46,7 +45,7 @@ void    leave_channel(t_server *serv, t_cmd args, t_member **user, int fd)
                     "info Error: You are not in this channel\n", 41);
         else
         {
-            lst_remove(chan->user_list, client);
+            free(lst_remove(chan->user_list, client));
             chan->number--;
             send_channel(chan, "left this channel", user, fd);
         }
@@ -66,7 +65,7 @@ void    find_channel(t_server *serv, t_cmd args, t_member **user, int fd)
 
         else if (!(join = lst_first_match(serv->chan_list, name, cmp_channel)))
         {
-            if (!(join = init_channel(name, user[fd])))
+            if (!(join = init_channel(name)))
                 write_buf(&(user[fd]->snd_buf),
                         "info Error: Cannot create this channel\n", 40);
             else

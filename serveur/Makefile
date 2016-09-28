@@ -16,7 +16,7 @@ LIBDIR	= $(ROOT)/../lib
 LFTINC	= $(LIBDIR)/include
 
 # compil flags
-CFLAGS	= -I $(INCDIR) -I $(LFTINC) -Wall -Wextra -Werror
+CFLAGS	= -I $(INCDIR) -I $(LFTINC) -Wall -Wextra -Werror -g
 LIBS = -L $(LIBDIR) -l linked_list
 
 # source files

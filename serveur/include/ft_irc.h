@@ -73,7 +73,7 @@ typedef struct      s_server
 typedef void (*t_fpointer) (t_server *, t_cmd, t_member **, int);
 
 enum                e_buff_type{SEND, RECEIVE};
-enum                e_cmd_type{NICK, MSG, JOIN, LEAVE, QUIT};
+enum                e_cmd_type{NICK, MSG, JOIN, LEAVE, WHO};
 
 /*
  * accept.c
@@ -113,12 +113,6 @@ int         r_error(char *error);
 void        get_commands(t_server *serv, t_member **user, int fd);
 
 /*
- * main.c
- */
-int         get_port(char *number, int *port);
-int         init(t_server *serv, t_member **user, int port);
-
-/*
  * read.c
  */
 int         ft_read(t_server *serv, t_member **user, int fd);
@@ -142,6 +136,7 @@ void         loop(t_server *serv, t_member **user);
 /*
  * send.c
  */
+void        info_channel(t_channel *chan, char *str);
 void        send_channel(t_channel *chan, char *str, t_member **user, int fd);
 void        send_all(t_server *serv, t_cmd cmd, t_member **user, int fd);
 void        send_msg(t_server *serv, t_cmd cmd, t_member **user, int fd);
