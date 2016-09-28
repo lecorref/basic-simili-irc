@@ -32,18 +32,13 @@ static int  init(t_server *serv, t_member **user, int port)
     return (0);
 }
 
-static void free_nothing(void *nil)
-{
-    (void)nil;
-}
-
 static void free_chan(void *elem)
 {
     t_channel   *chan;
 
     chan = elem;
     free(chan->name);
-    lst_delete(chan->user_list, free_nothing);
+    lst_delete(chan->user_list, free_client;
     free(chan->user_list);
     free(chan);
 }
