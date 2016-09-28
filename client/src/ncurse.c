@@ -36,6 +36,7 @@ void            print_window(WINDOW *win, t_lst_head *chan_head)
     while (msg != NULL)
     {
         waddstr(win, msg->content);
+        waddch(win, '\n');
         msg = msg->next;
     }
     wrefresh(win);

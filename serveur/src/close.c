@@ -1,5 +1,10 @@
 #include "ft_irc.h"
 
+void        free_client(void *nil)
+{
+    (void)nil;
+}
+
 void        close_client(t_member *user, int id)
 {
     close(id);

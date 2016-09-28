@@ -10,30 +10,34 @@ static char *join(char *str, char *buf)
     return (ret);
 }
 
-static int  put_in_chan(t_lst_head *chan, char *str)
+static int  put_in_chan(t_lst_head *chan, char *message)
 {
     char            *name;
+    char            *str;
     t_channel       *content;
     t_lst_elem      *elem;
 
-    name = strsep(&str, " ");
-    if ((content = lst_first_match(chan, name, cmp_chan)))
+    while ((str = strsep(&message, "\n")) && strlen(str))
     {
-        lst_pushback(content->msg, lst_create(str, strlen(str) + 1));
-        if (content->msg->size > 200)
+        name = strsep(&str, " ");
+        if ((content = lst_first_match(chan, name, cmp_chan)))
         {
-            elem = lst_pop(content->msg, 0);
-            lst_delete_elem(&elem, free);
+            lst_pushback(content->msg, lst_create_no_malloc(strdup(str)));
+            if (content->msg->size > 200)
+            {
+                elem = lst_pop(content->msg, 0);
+                lst_delete_elem(&elem, free);
+            }
         }
-    }
-    else
-    {
-        if (!(content = malloc(sizeof(t_channel))))
-            return (0);
-        content->name = strdup(name);
-        content->msg = lst_init(lst_create_no_malloc(strdup(str)));
-        lst_pushback(chan, lst_create_no_malloc(content));
-        return (1);
+        else
+        {
+            if (!(content = malloc(sizeof(t_channel))))
+                return (0);
+            content->name = strdup(name);
+            content->msg = lst_init(lst_create_no_malloc(strdup(str)));
+            lst_pushback(chan, lst_create_no_malloc(content));
+            return (1);
+        }
     }
     return (0);
 }

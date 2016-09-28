@@ -1,5 +1,18 @@
 #include "ft_irc.h"
 
+void    remove_from_chan(t_lst_head *chan, t_member *user)
+{
+    t_lst_elem  *elem;
+
+    elem = chan->first;
+    while (elem)
+    {
+        lst_free_match(((t_channel *)elem->content)->user_list,
+                user->name, cmp_user, free_client);
+        elem = elem->next;
+    }
+}
+
 int     ft_read(t_server *serv, t_member **user, int fd)
 {
     int     ret;

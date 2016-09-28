@@ -98,6 +98,7 @@ int         find_name(t_member **user, char *name);
 /*
  * close.c
  */
+void        free_client(void *nil);
 void        close_client(t_member *user, int id);
 void        exit_server(t_server *serv, t_member **user);
 
