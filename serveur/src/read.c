@@ -25,6 +25,7 @@ int     ft_read(t_server *serv, t_member **user, int fd)
         bzero(buf, READ_MAX);
         if ((ret = read(fd, buf, READ_MAX)) <= 0)
         {
+            remove_from_chan(serv->chan_list, user[fd]);
             close_client(user[fd], fd);
             bzero(user[fd], sizeof(t_member));
             return (1);
