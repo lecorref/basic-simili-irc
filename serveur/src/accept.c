@@ -13,7 +13,7 @@ int         init_client(t_member *user)
 static int  to_many_client(t_server *serv, int fd)
 {
     write(fd, "info Error: cannot accept any new connexion\n", 45);
-    serv->fd_max++;
+    serv->fd_max--;
     close(fd);
     return (1);
 }
@@ -28,7 +28,7 @@ int         ft_accept(t_server *serv, t_member **user)
     if ((new_user = accept(serv->sock,
                     (struct sockaddr *)&new_sin, &sin_len)) < 0)
         return (1);
-    if (sin_len > serv->fd_max)
+    if ((long)new_user > serv->fd_max)
         serv->fd_max++;
     if (serv->fd_max > FD_MAX)
         return (to_many_client(serv, new_user));
